@@ -6,6 +6,9 @@ import random
 WIDTH, HEIGHT = 1600, 900
 
 
+
+
+
 def main():
     pg.display.set_caption("逃げろ！こうかとん")
     screen = pg.display.set_mode((WIDTH, HEIGHT))
@@ -24,16 +27,21 @@ def main():
    
 
     enn_rect = enn.get_rect(center=(random.randint(0, WIDTH), random.randint(0, HEIGHT)))
-    kk_rect = kk_img.get_rect(center=(WIDTH // 2, HEIGHT // 2))
+    kk_rect = kk_img.get_rect(center=(900, 400))
 
     vx = 5
     vy = 5
     
+    
+
+    def is_inside(rect):
+        return screen.get_rect().contains(rect)
+    
     movement_dict = {
-    pg.K_UP: (0, -5),    # 上矢印
-    pg.K_DOWN: (0, 5),  # 下矢印
-    pg.K_LEFT: (-5, 0),  # 左矢印
-    pg.K_RIGHT: (5, 0)   # 右矢印
+        pg.K_UP: (0, -5),    # 上矢印
+        pg.K_DOWN: (0, 5),  # 下矢印
+        pg.K_LEFT: (-5, 0),  # 左矢印
+        pg.K_RIGHT: (5, 0)   # 右矢印
     }
 
     while True:
@@ -54,23 +62,30 @@ def main():
         kk_rect.move_ip(total_movement[0], total_movement[1])
         enn_rect.move_ip(vx, vy)
         
-
+        
         screen.blit(bg_img, [0, 0])
+
+        if not is_inside(kk_rect):
+            kk_rect.clamp_ip(screen.get_rect())
+
+
         screen.blit(kk_img, kk_rect)
 
-        
 
+        if not is_inside(enn_rect):
+            vx = -vx
+            vy = -vy
         
-        if enn_rect.left > WIDTH or enn_rect.top > HEIGHT:
-            enn_rect = enn.get_rect(center=(random.randint(0, WIDTH), random.randint(0, HEIGHT)))
-            
+           
         screen.blit(enn, enn_rect)
+
+
 
         pg.display.update()
         tmr += 1
         clock.tick(50)
 
-        
+    
 
             
 
