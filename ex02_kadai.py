@@ -21,23 +21,31 @@ def main():
 
     tmr = 0
 
-    enn_x = random.randint(0, WIDTH - 20)
-    enn_y = random.randint(0, HEIGHT - 20)
+    
+    enn_rect = enn.get_rect(center=(random.randint(0, WIDTH), random.randint(0, HEIGHT)))
+
+    vx = 5
+    vy = 5
     
     while True:
         for event in pg.event.get():
             if event.type == pg.QUIT: 
                 return
 
+        enn_rect.move_ip(vx, vy)
         
         screen.blit(bg_img, [0, 0])
         screen.blit(kk_img, [900, 400])
-        screen.blit(enn, [enn_x, enn_y])
+        screen.blit(enn, enn_rect)
 
         pg.display.update()
         tmr += 1
-        clock.tick(10)
+        clock.tick(50)
 
+        if enn_rect.left > WIDTH or enn_rect.top > HEIGHT:
+            enn_rect = enn.get_rect(center=(random.randint(0, WIDTH), random.randint(0, HEIGHT)))
+
+            
 
 if __name__ == "__main__":
     pg.init()
