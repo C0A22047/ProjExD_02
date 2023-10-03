@@ -76,6 +76,8 @@ def main():
             vx = -vx
             vy = -vy
         
+        if kk_rect.colliderect(enn_rect):
+            return
            
         screen.blit(enn, enn_rect)
 
