@@ -47,13 +47,17 @@ def main():
     current_speed_index = 0
     current_size_index = 0
 
-   
+    # 爆弾Rectを作成
     enn_rect = bb_imgs[current_size_index].get_rect(center=(100, 100))
+
+    #こうかとんRectを作成
     kk_rect = kk_img.get_rect(center=(900, 400))
+
 
     vx = 5
     vy = 5
     
+    font = pg.font.Font(None, 36)
 
     def is_inside(rect):
         return screen.get_rect().contains(rect)
@@ -70,6 +74,8 @@ def main():
             if event.type == pg.QUIT: 
                 return
         
+
+
         key_lst = pg.key.get_pressed()
 
         total_movement =[0,0]
@@ -97,6 +103,7 @@ def main():
         
         screen.blit(bg_img, [0, 0])
 
+        #こうかとん画面内処理
         if not is_inside(kk_rect):
             kk_rect.clamp_ip(screen.get_rect())
 
@@ -109,6 +116,7 @@ def main():
         if not tate:  # 練習４：縦方向にはみ出たら
             vy *= -1
         
+        #当たり判定
         if kk_rect.colliderect(enn_rect):
             kk_img2 = pg.image.load("ProjExD2023/ex02/fig/8.png")
             kk_img2 = pg.transform.rotozoom(kk_img2, 0, 2.0)
@@ -119,7 +127,9 @@ def main():
            
         screen.blit(enn, enn_rect)
 
-
+        time = tmr // 50
+        text = font.render(f"Timer{time}", True, (255, 0, 0))
+        screen.blit(text, (10,10))
 
         pg.display.update()
         
