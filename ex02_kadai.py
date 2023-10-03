@@ -5,6 +5,18 @@ import random
 
 WIDTH, HEIGHT = 1600, 900
 
+def check_bound(obj_rct: pg.Rect):
+    """
+    引数：こうかとんRectかばくだんRect
+    戻り値：タプル（横方向判定結果，縦方向判定結果）
+    画面内ならTrue，画面外ならFalse
+    """
+    yoko, tate = True, True
+    if obj_rct.left < 0 or WIDTH < obj_rct.right: # 横方向判定
+        yoko = False
+    if obj_rct.top < 0 or HEIGHT < obj_rct.bottom: # 縦方向判定
+        tate = False
+    return yoko, tate
 
 def main():
     pg.display.set_caption("逃げろ！こうかとん")
@@ -13,10 +25,17 @@ def main():
     kk_img = pg.image.load("ProjExD2023/ex02/fig/3.png")
     kk_img = pg.transform.rotozoom(kk_img, 0, 2.0)
 
-    
+    # 加速度のリスト
+    accs = [a for a in range(1, 11)]
 
-    enn = pg.Surface((20, 20), pg.SRCALPHA)
-    pg.draw.circle(enn, (255, 0, 0), (10, 10), 10)
+    # 拡大爆弾Surfaceのリストを作成
+    bb_imgs = []
+    for r in range(1, 11):
+        enn = pg.Surface((20 * r, 20 * r), pg.SRCALPHA)
+        pg.draw.circle(enn, (255, 0, 0), (10 * r, 10 * r), 10 * r)
+        bb_imgs.append(enn)
+
+   
 
     enn.set_colorkey((0, 0, 0))
     
@@ -24,8 +43,12 @@ def main():
 
     tmr = 0
 
+    # 現在の速度と大きさのインデックス
+    current_speed_index = 0
+    current_size_index = 0
+
    
-    enn_rect = enn.get_rect(center=(random.randint(0, WIDTH), random.randint(0, HEIGHT)))
+    enn_rect = bb_imgs[current_size_index].get_rect(center=(100, 100))
     kk_rect = kk_img.get_rect(center=(900, 400))
 
     vx = 5
@@ -58,7 +81,18 @@ def main():
 
 
         kk_rect.move_ip(total_movement[0], total_movement[1])
-        enn_rect.move_ip(vx, vy)
+
+        # 時間経過に応じて速度と大きさを更新
+        tmr += 1
+        current_speed_index = min(tmr // 500, 9)
+        current_size_index = min(tmr // 500, 9)
+
+        # 爆弾を速度に応じて移動
+        avx, avy = vx * accs[current_speed_index], vy * accs[current_speed_index]
+        enn_rect.move_ip(avx, avy)
+        yoko, tate = check_bound(enn_rect)
+
+        enn = bb_imgs[(current_size_index)]
         
         
         screen.blit(bg_img, [0, 0])
@@ -70,9 +104,10 @@ def main():
         screen.blit(kk_img, kk_rect)
 
 
-        if not is_inside(enn_rect):
-            vx = -vx
-            vy = -vy
+        if not yoko:  # 練習４：横方向にはみ出たら
+            vx *= -1
+        if not tate:  # 練習４：縦方向にはみ出たら
+            vy *= -1
         
         if kk_rect.colliderect(enn_rect):
             kk_img2 = pg.image.load("ProjExD2023/ex02/fig/8.png")
@@ -87,7 +122,7 @@ def main():
 
 
         pg.display.update()
-        tmr += 1
+        
         clock.tick(50)
 
     
