@@ -35,8 +35,6 @@ def main():
         pg.draw.circle(enn, (255, 0, 0), (10 * r, 10 * r), 10 * r)
         bb_imgs.append(enn)
 
-   
-
     enn.set_colorkey((0, 0, 0))
     
     clock = pg.time.Clock()
@@ -59,8 +57,6 @@ def main():
     
     font = pg.font.Font(None, 36)
 
-    def is_inside(rect):
-        return screen.get_rect().contains(rect)
     
     movement_dict = {
         pg.K_UP: (0, -5),    # 上矢印
@@ -104,8 +100,8 @@ def main():
         screen.blit(bg_img, [0, 0])
 
         #こうかとん画面内処理
-        if not is_inside(kk_rect):
-            kk_rect.clamp_ip(screen.get_rect())
+        if check_bound(kk_rect) != (True, True):  # 練習４：はみだし判定
+            kk_rect.move_ip(-total_movement[0], -total_movement[1]) 
 
 
         screen.blit(kk_img, kk_rect)
