@@ -6,9 +6,6 @@ import random
 WIDTH, HEIGHT = 1600, 900
 
 
-
-
-
 def main():
     pg.display.set_caption("逃げろ！こうかとん")
     screen = pg.display.set_mode((WIDTH, HEIGHT))
@@ -16,8 +13,11 @@ def main():
     kk_img = pg.image.load("ProjExD2023/ex02/fig/3.png")
     kk_img = pg.transform.rotozoom(kk_img, 0, 2.0)
 
+    
+
     enn = pg.Surface((20, 20), pg.SRCALPHA)
     pg.draw.circle(enn, (255, 0, 0), (10, 10), 10)
+
     enn.set_colorkey((0, 0, 0))
     
     clock = pg.time.Clock()
@@ -25,13 +25,11 @@ def main():
     tmr = 0
 
    
-
     enn_rect = enn.get_rect(center=(random.randint(0, WIDTH), random.randint(0, HEIGHT)))
     kk_rect = kk_img.get_rect(center=(900, 400))
 
     vx = 5
     vy = 5
-    
     
 
     def is_inside(rect):
@@ -77,6 +75,11 @@ def main():
             vy = -vy
         
         if kk_rect.colliderect(enn_rect):
+            kk_img2 = pg.image.load("ProjExD2023/ex02/fig/8.png")
+            kk_img2 = pg.transform.rotozoom(kk_img2, 0, 2.0)
+            screen.blit(kk_img2, kk_rect)
+            pg.display.update()
+            pg.time.wait(1000)
             return
            
         screen.blit(enn, enn_rect)
